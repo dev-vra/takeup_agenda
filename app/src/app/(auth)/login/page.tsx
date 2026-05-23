@@ -38,30 +38,27 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Logo */}
-        <div className="text-center space-y-3">
-          <div className="flex justify-center">
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-4 shadow-lg">
+      <div className="w-full max-w-md">
+        <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur">
+          <CardHeader className="space-y-4 pb-4 pt-8">
+            {/* Logo + título dentro do card */}
+            <div className="flex flex-col items-center gap-3">
               <Image
                 src="/logo-laferlins.png"
                 alt="Laferlins"
-                width={80}
-                height={80}
+                width={72}
+                height={72}
                 className="object-contain"
                 priority
               />
+              <p className="text-xs text-slate-400 font-medium tracking-wide">Agenda TakeUp — Controle de HVI & TakeUp</p>
             </div>
-          </div>
-          <p className="text-blue-200 text-sm">Agenda TakeUp — Controle de HVI & TakeUp</p>
-        </div>
-
-        <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl font-semibold text-center">Entrar na plataforma</CardTitle>
-            <CardDescription className="text-center">
-              Use seu e-mail e senha para acessar
-            </CardDescription>
+            <div className="space-y-1">
+              <CardTitle className="text-xl font-semibold text-center">Entrar na plataforma</CardTitle>
+              <CardDescription className="text-center">
+                Use seu e-mail e senha para acessar
+              </CardDescription>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -115,7 +112,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-blue-300">
+        <p className="text-center text-xs text-blue-300 mt-4">
           Problemas com o acesso? Contate o administrador.
         </p>
       </div>
