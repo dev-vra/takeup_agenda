@@ -131,8 +131,8 @@ export function ContratoDetalhe({ contract: initialContract, currentUserId }: Co
         ...prev,
         installments: prev.installments.map(i =>
           i.id === instEditId
-            ? { ...i, scheduled_quantity: parseFloat(instEditQty), due_date: instEditDue, status: instEditStatus as ContractInstallment['status'] }
-            : i
+            ? { ...i, scheduled_quantity: parseFloat(instEditQty), due_date: instEditDue, status: instEditStatus as ContractInstallment['status'], analyses: i.analyses ?? [] }
+            : { ...i, analyses: i.analyses ?? [] }
         ),
       }))
       toast.success('Parcela atualizada!')
