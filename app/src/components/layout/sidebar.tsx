@@ -11,6 +11,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import Image from 'next/image'
 
 const NAV_ITEMS = [
   { href: '/agenda', label: 'Agenda Operacional', icon: CalendarDays },
@@ -42,19 +43,15 @@ export function Sidebar() {
         'flex items-center h-16 border-b border-slate-200 px-4 shrink-0',
         collapsed ? 'justify-center' : 'gap-3'
       )}>
-        {/* Leaf/Plant SVG icon */}
-        <div className="w-8 h-8 shrink-0 flex items-center justify-center">
-          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
-            <rect width="32" height="32" rx="8" fill="#16a34a" />
-            <path
-              d="M16 26c0 0-8-5-8-13a8 8 0 0 1 16 0c0 8-8 13-8 13z"
-              fill="white"
-              fillOpacity="0.9"
-            />
-            <line x1="16" y1="26" x2="16" y2="14" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M16 20 Q12 17 12 13" stroke="#16a34a" strokeWidth="1" strokeLinecap="round" fill="none" />
-            <path d="M16 18 Q20 15 20 11" stroke="#16a34a" strokeWidth="1" strokeLinecap="round" fill="none" />
-          </svg>
+        <div className="shrink-0 flex items-center justify-center">
+          <Image
+            src="/logo-laferlins.png"
+            alt="Laferlins"
+            width={collapsed ? 32 : 40}
+            height={collapsed ? 32 : 40}
+            className="object-contain"
+            priority
+          />
         </div>
         {!collapsed && (
           <div className="overflow-hidden">

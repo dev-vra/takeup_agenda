@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle } from 'lucide-react'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -39,13 +40,19 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-3">
           <div className="flex justify-center">
-            <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">L</span>
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-4 shadow-lg">
+              <Image
+                src="/logo-laferlins.png"
+                alt="Laferlins"
+                width={80}
+                height={80}
+                className="object-contain"
+                priority
+              />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-white">Laferlins</h1>
           <p className="text-blue-200 text-sm">Agenda TakeUp — Controle de HVI & TakeUp</p>
         </div>
 
