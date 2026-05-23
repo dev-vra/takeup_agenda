@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -96,9 +97,21 @@ export function AnalisesList({ analyses }: AnalisesListProps) {
           <p className="text-sm">Nenhuma análise encontrada</p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {filtered.map(a => <AnalysisCard key={a.id} analysis={a} />)}
-        </div>
+        <AnimatePresence>
+          <div className="space-y-2">
+            {filtered.map((a, i) => (
+              <motion.div
+                key={a.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: 'easeOut', delay: Math.min(i * 0.05, 0.4) }}
+              >
+                <AnalysisCard analysis={a} />
+              </motion.div>
+            ))}
+          </div>
+        </AnimatePresence>
       )}
     </div>
   )

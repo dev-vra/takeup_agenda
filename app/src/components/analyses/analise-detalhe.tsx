@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Separator } from '@/components/ui/separator'
 import {
   ArrowLeft, Upload, CheckCircle, XCircle, Calendar, MessageSquare,
-  FileText, Loader2, CheckCircle2, AlertTriangle, Clock, RotateCcw, Printer
+  FileText, Loader2, CheckCircle2, AlertTriangle, Clock, RotateCcw, Printer, Trash2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { formatDate, formatMonth, toISODate } from '@/lib/utils/date-format'
@@ -71,8 +71,32 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
   const hviResponsibles = responsibles.filter(r => r.type === 'hvi' || r.type === 'geral')
   const takeupResponsibles = responsibles.filter(r => r.type === 'takeup' || r.type === 'geral')
 
+  // Delete dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+
   // Export report dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false)
+
+  const isAdmin = currentUserId === '37e812af-9bb7-44ff-ae42-4cd04a2422e5'
+
+  async function handleDeleteAnalysis() {
+    setDeleteLoading(true)
+    try {
+      const res = await fetch(`/api/analyses/${analysis.id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'Erro ao excluir')
+      }
+      toast.success('Análise excluída.')
+      router.push('/analises')
+    } catch (e) {
+      toast.error(`Erro: ${String(e)}`)
+    } finally {
+      setDeleteLoading(false)
+      setDeleteDialogOpen(false)
+    }
+  }
 
   function handleExportReport() {
     const a = analysis
@@ -384,16 +408,53 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
             {' · '}Parcela: {formatMonth(analysis.installment?.reference_month)}
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setExportDialogOpen(true)}
-          className="shrink-0 gap-1.5"
-        >
-          <Printer className="h-3.5 w-3.5" />
-          Exportar Resumo
-        </Button>
+        <div className="flex gap-2 shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setExportDialogOpen(true)}
+            className="gap-1.5"
+          >
+            <Printer className="h-3.5 w-3.5" />
+            Exportar Resumo
+          </Button>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleteDialogOpen(true)}
+              className="gap-1.5 text-red-600 hover:text-red-700 hover:border-red-300"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Excluir
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* Delete dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Excluir Análise</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600">
+            Tem certeza que deseja excluir a análise do contrato{' '}
+            <strong>{analysis.contract?.contract_number}</strong>? Esta ação não pode ser desfeita.
+          </p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancelar</Button>
+            <Button
+              onClick={handleDeleteAnalysis}
+              disabled={deleteLoading}
+              className="bg-red-600 hover:bg-red-700 gap-1.5"
+            >
+              {deleteLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+              Excluir
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Export dialog */}
       <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>

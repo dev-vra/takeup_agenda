@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -165,12 +166,18 @@ export function ContratosDashboard({ contracts, analysesByContract, kpis }: Cont
               <p className="text-sm">Nenhum contrato encontrado</p>
             </div>
           ) : (
-            filtered.map(c => (
-              <ContractCard
+            filtered.map((c, i) => (
+              <motion.div
                 key={c.id}
-                contract={c}
-                stats={analysesByContract[c.id]}
-              />
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut', delay: Math.min(i * 0.04, 0.4) }}
+              >
+                <ContractCard
+                  contract={c}
+                  stats={analysesByContract[c.id]}
+                />
+              </motion.div>
             ))
           )}
         </div>

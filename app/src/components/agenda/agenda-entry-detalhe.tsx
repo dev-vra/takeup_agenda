@@ -9,12 +9,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ArrowLeft, Loader2, Send, Paperclip, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Send, Paperclip, CheckCircle2, Pencil, Trash2 } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { formatDate, formatMonth } from '@/lib/utils/date-format'
 import { ANALYSIS_STATUS_LABEL, ANALYSIS_STATUS_COLOR } from '@/lib/utils/ui'
 import { cn } from '@/lib/utils'
 import type { AgendaEntry, AgendaComment, AgendaEntryStatus } from '@/types'
+
+const ADMIN_USER_ID = '37e812af-9bb7-44ff-ae42-4cd04a2422e5'
 
 interface AgendaEntryDetalheProps {
   entry: AgendaEntry & {
@@ -28,6 +32,7 @@ interface AgendaEntryDetalheProps {
     contract?: { contract_number: string } | null
   }
   comments: (AgendaComment & { creator?: { name: string } })[]
+  currentUserId?: string
 }
 
 const STATUS_LABELS: Record<AgendaEntryStatus, string> = {
@@ -44,7 +49,7 @@ const STATUS_COLORS: Record<AgendaEntryStatus, string> = {
   cancelado: 'bg-slate-100 text-slate-500',
 }
 
-export function AgendaEntryDetalhe({ entry: initialEntry, comments: initialComments }: AgendaEntryDetalheProps) {
+export function AgendaEntryDetalhe({ entry: initialEntry, comments: initialComments, currentUserId }: AgendaEntryDetalheProps) {
   const router = useRouter()
   const supabase = createClient()
   const [entry, setEntry] = useState(initialEntry)
@@ -53,6 +58,65 @@ export function AgendaEntryDetalhe({ entry: initialEntry, comments: initialComme
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null)
   const [submittingComment, setSubmittingComment] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
+  const isAdmin = currentUserId === ADMIN_USER_ID
+
+  // Edit state
+  const [editOpen, setEditOpen] = useState(false)
+  const [editLoading, setEditLoading] = useState(false)
+  const [editTitle, setEditTitle] = useState(entry.title)
+  const [editDescription, setEditDescription] = useState(entry.description || '')
+  const [editDate, setEditDate] = useState(entry.scheduled_date || '')
+  const [editTime, setEditTime] = useState(entry.scheduled_time || '')
+
+  // Delete state
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+
+  async function handleEditSave() {
+    if (!editTitle.trim()) return toast.error('Título é obrigatório.')
+    setEditLoading(true)
+    try {
+      const { error } = await supabase.from('agenda_entries').update({
+        title: editTitle.trim(),
+        description: editDescription.trim() || null,
+        scheduled_date: editDate || null,
+        scheduled_time: editTime || null,
+      }).eq('id', entry.id)
+
+      if (error) throw error
+      setEntry(prev => ({ ...prev, title: editTitle.trim(), description: editDescription.trim() || undefined, scheduled_date: editDate || prev.scheduled_date, scheduled_time: editTime || undefined }))
+      toast.success('Lançamento atualizado!')
+      setEditOpen(false)
+      router.refresh()
+    } catch (e) {
+      toast.error(`Erro: ${String(e)}`)
+    } finally {
+      setEditLoading(false)
+    }
+  }
+
+  async function handleDelete() {
+    setDeleteLoading(true)
+    try {
+      const { error } = await supabase.from('agenda_entries').delete().eq('id', entry.id)
+      if (error) throw error
+
+      await supabase.from('audit_log').insert({
+        action: 'delete',
+        entity_type: 'agenda_entry',
+        entity_id: entry.id,
+        old_values: { title: entry.title, scheduled_date: entry.scheduled_date },
+      })
+
+      toast.success('Lançamento excluído.')
+      router.push('/agenda')
+    } catch (e) {
+      toast.error(`Erro: ${String(e)}`)
+    } finally {
+      setDeleteLoading(false)
+      setDeleteOpen(false)
+    }
+  }
 
   async function handleStatusChange(newStatus: AgendaEntryStatus) {
     setUpdatingStatus(true)
@@ -120,6 +184,61 @@ export function AgendaEntryDetalhe({ entry: initialEntry, comments: initialComme
 
   return (
     <div className="space-y-6">
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Lançamento</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Título *</Label>
+              <Input value={editTitle} onChange={e => setEditTitle(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Descrição</Label>
+              <Textarea value={editDescription} onChange={e => setEditDescription(e.target.value)} rows={3} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Data</Label>
+                <Input type="date" value={editDate} onChange={e => setEditDate(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Horário</Label>
+                <Input type="time" value={editTime} onChange={e => setEditTime(e.target.value)} />
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+            <Button onClick={handleEditSave} disabled={editLoading} className="bg-blue-700 hover:bg-blue-800 gap-1.5">
+              {editLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+              Salvar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Excluir Lançamento</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600">
+            Tem certeza que deseja excluir o lançamento <strong>{entry.title}</strong>? Esta ação não pode ser desfeita.
+          </p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setDeleteOpen(false)}>Cancelar</Button>
+            <Button onClick={handleDelete} disabled={deleteLoading} className="bg-red-600 hover:bg-red-700 gap-1.5">
+              {deleteLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+              Excluir
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex items-start justify-between gap-4">
         <div>
           <button
@@ -134,9 +253,31 @@ export function AgendaEntryDetalhe({ entry: initialEntry, comments: initialComme
             <p className="text-slate-500 text-sm mt-0.5">{entry.description}</p>
           )}
         </div>
-        <Badge className={cn('shrink-0', STATUS_COLORS[entry.status])}>
-          {STATUS_LABELS[entry.status]}
-        </Badge>
+        <div className="flex items-center gap-2 shrink-0">
+          {isAdmin && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => { setEditTitle(entry.title); setEditDescription(entry.description || ''); setEditDate(entry.scheduled_date || ''); setEditTime(entry.scheduled_time || ''); setEditOpen(true) }}
+                className="gap-1.5"
+              >
+                <Pencil className="h-3.5 w-3.5" /> Editar
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDeleteOpen(true)}
+                className="gap-1.5 text-red-600 hover:text-red-700 hover:border-red-300"
+              >
+                <Trash2 className="h-3.5 w-3.5" /> Excluir
+              </Button>
+            </>
+          )}
+          <Badge className={cn(STATUS_COLORS[entry.status])}>
+            {STATUS_LABELS[entry.status]}
+          </Badge>
+        </div>
       </div>
 
       {/* Info Card */}

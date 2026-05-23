@@ -64,6 +64,15 @@ export async function POST(request: Request) {
 
     if (error) throw error
 
+    // Audit log
+    await admin.from('audit_log').insert({
+      user_id: user.id,
+      action: 'create',
+      entity_type: 'report',
+      entity_id: report.id,
+      new_values: { title, report_type: reportType, related_contract_id: contractId || null },
+    })
+
     return NextResponse.json({ id: report.id, content })
   } catch (e) {
     console.error('Report generation error:', e)

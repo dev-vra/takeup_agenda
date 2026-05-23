@@ -2,16 +2,22 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Package, FileText, BarChart3, Plus, ArrowLeft,
-  CheckCircle2, AlertCircle, Clock, ChevronRight
+  CheckCircle2, AlertCircle, Clock, ChevronRight, Pencil, Archive, Loader2
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { formatDate, formatMonth } from '@/lib/utils/date-format'
 import {
   ANALYSIS_STATUS_LABEL, ANALYSIS_STATUS_COLOR, ANALYSIS_STATUS_DOT,
@@ -20,18 +26,84 @@ import {
 import { cn } from '@/lib/utils'
 import type { Contract, ContractInstallment, Analysis } from '@/types'
 
+const ADMIN_USER_ID = '37e812af-9bb7-44ff-ae42-4cd04a2422e5'
+
 interface ContratoDetalheProps {
   contract: Contract & {
     seller: { name: string; city?: string; state?: string }
     buyer: { name: string; city?: string; country?: string }
     installments: (ContractInstallment & { analyses: Analysis[] })[]
   }
+  currentUserId?: string
 }
 
-export function ContratoDetalhe({ contract: c }: ContratoDetalheProps) {
+export function ContratoDetalhe({ contract: initialContract, currentUserId }: ContratoDetalheProps) {
+  const router = useRouter()
+  const [c, setC] = useState(initialContract)
   const [selectedInstallment, setSelectedInstallment] = useState<string | null>(null)
+  const isAdmin = currentUserId === ADMIN_USER_ID
+
+  // Edit modal state
+  const [editOpen, setEditOpen] = useState(false)
+  const [editLoading, setEditLoading] = useState(false)
+  const [editResponsible, setEditResponsible] = useState(c.responsible || '')
+  const [editObservation, setEditObservation] = useState(c.observation || '')
+  const [editQualitySpec, setEditQualitySpec] = useState(c.quality_spec || '')
+
+  // Archive dialog state
+  const [archiveOpen, setArchiveOpen] = useState(false)
+  const [archiveLoading, setArchiveLoading] = useState(false)
+
+  async function handleEditSave() {
+    setEditLoading(true)
+    try {
+      const res = await fetch(`/api/contracts/${c.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          responsible: editResponsible,
+          observation: editObservation,
+          quality_spec: editQualitySpec,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'Erro ao salvar')
+      }
+      setC(prev => ({ ...prev, responsible: editResponsible, observation: editObservation, quality_spec: editQualitySpec }))
+      toast.success('Contrato atualizado!')
+      setEditOpen(false)
+      router.refresh()
+    } catch (e) {
+      toast.error(`Erro: ${String(e)}`)
+    } finally {
+      setEditLoading(false)
+    }
+  }
+
+  async function handleArchive() {
+    setArchiveLoading(true)
+    try {
+      const res = await fetch(`/api/contracts/${c.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: false }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'Erro ao arquivar')
+      }
+      toast.success('Contrato arquivado.')
+      router.push('/contratos')
+    } catch (e) {
+      toast.error(`Erro: ${String(e)}`)
+    } finally {
+      setArchiveLoading(false)
+      setArchiveOpen(false)
+    }
+  }
   const pct = c.total_quantity > 0 ? ((c.total_takeup || 0) / c.total_quantity) * 100 : 0
-  const installments = c.installments || []
+  const installments = (c as typeof initialContract).installments || []
 
   const selected = selectedInstallment
     ? installments.find(i => i.id === selectedInstallment)
@@ -64,12 +136,83 @@ export function ContratoDetalhe({ contract: c }: ContratoDetalheProps) {
             <span>{c.buyer?.name}</span>
           </div>
         </div>
-        <Button asChild className="bg-blue-700 hover:bg-blue-800 shrink-0">
-          <Link href={`/analises/nova?contract=${c.id}`}>
-            <Plus className="h-4 w-4 mr-1.5" /> Nova Análise
-          </Link>
-        </Button>
+        <div className="flex gap-2 shrink-0 flex-wrap">
+          {isAdmin && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => { setEditResponsible(c.responsible || ''); setEditObservation(c.observation || ''); setEditQualitySpec(c.quality_spec || ''); setEditOpen(true) }}
+                className="gap-1.5"
+              >
+                <Pencil className="h-3.5 w-3.5" /> Editar
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setArchiveOpen(true)}
+                className="gap-1.5 text-orange-600 hover:text-orange-700 hover:border-orange-300"
+              >
+                <Archive className="h-3.5 w-3.5" /> Arquivar
+              </Button>
+            </>
+          )}
+          <Button asChild className="bg-blue-700 hover:bg-blue-800">
+            <Link href={`/analises/nova?contract=${c.id}`}>
+              <Plus className="h-4 w-4 mr-1.5" /> Nova Análise
+            </Link>
+          </Button>
+        </div>
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Contrato {c.contract_number}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Responsável</Label>
+              <Input value={editResponsible} onChange={e => setEditResponsible(e.target.value)} placeholder="Nome do responsável" />
+            </div>
+            <div className="space-y-2">
+              <Label>Observação</Label>
+              <Textarea value={editObservation} onChange={e => setEditObservation(e.target.value)} rows={3} />
+            </div>
+            <div className="space-y-2">
+              <Label>Especificação de Qualidade</Label>
+              <Textarea value={editQualitySpec} onChange={e => setEditQualitySpec(e.target.value)} rows={4} />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+            <Button onClick={handleEditSave} disabled={editLoading} className="bg-blue-700 hover:bg-blue-800 gap-1.5">
+              {editLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+              Salvar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Archive Dialog */}
+      <Dialog open={archiveOpen} onOpenChange={setArchiveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Arquivar Contrato</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600">
+            Deseja arquivar o contrato <strong>{c.contract_number}</strong>? O contrato ficará inativo e não aparecerá na lista de contratos ativos.
+          </p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setArchiveOpen(false)}>Cancelar</Button>
+            <Button onClick={handleArchive} disabled={archiveLoading} className="bg-orange-600 hover:bg-orange-700 gap-1.5">
+              {archiveLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Archive className="h-3.5 w-3.5" />}
+              Arquivar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

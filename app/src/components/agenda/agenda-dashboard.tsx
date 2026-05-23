@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { formatDate, formatMonth } from '@/lib/utils/date-format'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -79,74 +80,98 @@ export function AgendaDashboard({
         {/* KPI Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Análises em Aberto — card clicável, sem tooltip de info */}
-          <Link href="/analises" className="block">
-            <Card className="hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer">
-              <CardContent className="py-4 px-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-blue-50">
-                  <Activity className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-500">Análises em Aberto</p>
-                  <p className="text-xl font-bold text-slate-800">{kpis.activeAnalyses}</p>
-                </div>
-                <span className="text-xs text-blue-600 font-medium shrink-0">Ver mais →</span>
-              </CardContent>
-            </Card>
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0 }}
+          >
+            <Link href="/analises" className="block">
+              <Card className="hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer">
+                <CardContent className="py-4 px-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-blue-50">
+                    <Activity className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-slate-500">Análises em Aberto</p>
+                    <p className="text-xl font-bold text-slate-800">{kpis.activeAnalyses}</p>
+                  </div>
+                  <span className="text-xs text-blue-600 font-medium shrink-0">Ver mais →</span>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
 
           {/* Finalizadas no Mês */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Card>
-                <CardContent className="py-4 px-4 flex items-center gap-3 cursor-default">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-green-50">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Finalizadas no Mês</p>
-                    <p className="text-xl font-bold text-slate-800">{kpis.finishedThisMonth}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>Análises com status &apos;Finalizada&apos; criadas/atualizadas neste mês</TooltipContent>
-          </Tooltip>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card>
+                  <CardContent className="py-4 px-4 flex items-center gap-3 cursor-default">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-green-50">
+                      <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500">Finalizadas no Mês</p>
+                      <p className="text-xl font-bold text-slate-800">{kpis.finishedThisMonth}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>Análises com status &apos;Finalizada&apos; criadas/atualizadas neste mês</TooltipContent>
+            </Tooltip>
+          </motion.div>
 
           {/* Tons Aprovadas */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Card>
-                <CardContent className="py-4 px-4 flex items-center gap-3 cursor-default">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-purple-50">
-                    <TrendingUp className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Tons Aprovadas (Mês)</p>
-                    <p className="text-xl font-bold text-slate-800">{kpis.totalTonsThisMonth.toFixed(2)}t</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>Total de toneladas aprovadas em análises finalizadas neste mês</TooltipContent>
-          </Tooltip>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.2 }}
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card>
+                  <CardContent className="py-4 px-4 flex items-center gap-3 cursor-default">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-purple-50">
+                      <TrendingUp className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500">Tons Aprovadas (Mês)</p>
+                      <p className="text-xl font-bold text-slate-800">{kpis.totalTonsThisMonth.toFixed(2)}t</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>Total de toneladas aprovadas em análises finalizadas neste mês</TooltipContent>
+            </Tooltip>
+          </motion.div>
 
           {/* Compromissos Hoje */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Card className={cn(kpis.todayCount > 0 && 'border-orange-200')}>
-                <CardContent className="py-4 px-4 flex items-center gap-3 cursor-default">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-orange-50">
-                    <Zap className="h-5 w-5 text-orange-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Compromissos Hoje</p>
-                    <p className="text-xl font-bold text-slate-800">{kpis.todayCount}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>Lançamentos da agenda com data de hoje</TooltipContent>
-          </Tooltip>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.3 }}
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card className={cn(kpis.todayCount > 0 && 'border-orange-200')}>
+                  <CardContent className="py-4 px-4 flex items-center gap-3 cursor-default">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-orange-50">
+                      <Zap className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500">Compromissos Hoje</p>
+                      <p className="text-xl font-bold text-slate-800">{kpis.todayCount}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>Lançamentos da agenda com data de hoje</TooltipContent>
+            </Tooltip>
+          </motion.div>
         </div>
 
         {/* Charts Section */}
