@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -558,7 +559,7 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
               <div className="space-y-3">
                 <div className="space-y-2">
                   <Label>Data de {hviApproved ? 'Aprovação' : 'Reprovação'} *</Label>
-                  <Input type="date" value={hviApprovalDate} onChange={e => setHviApprovalDate(e.target.value)} />
+                  <DateInput value={hviApprovalDate} onChange={setHviApprovalDate} />
                 </div>
                 {hviApproved === false && (
                   <div className="space-y-2">
@@ -590,7 +591,7 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Data Prevista do TakeUp *</Label>
-              <Input type="date" value={takeupDate} onChange={e => setTakeupDate(e.target.value)} min={new Date().toISOString().split('T')[0]} />
+              <DateInput value={takeupDate} onChange={setTakeupDate} />
             </div>
             <div className="space-y-2">
               <Label>Responsável pelo TakeUp *</Label>
@@ -643,7 +644,7 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
               <div className="space-y-3">
                 <div className="space-y-2">
                   <Label>Data de Realização *</Label>
-                  <Input type="date" value={takeupActualDate} onChange={e => setTakeupActualDate(e.target.value)} />
+                  <DateInput value={takeupActualDate} onChange={setTakeupActualDate} />
                 </div>
                 <div className="space-y-2">
                   <Label>Arquivo do TakeUp (opcional)</Label>
@@ -663,7 +664,7 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
               <div className="space-y-3">
                 <div className="space-y-2">
                   <Label>Nova Data Prevista *</Label>
-                  <Input type="date" value={takeupNewDate} onChange={e => setTakeupNewDate(e.target.value)} min={new Date().toISOString().split('T')[0]} />
+                  <DateInput value={takeupNewDate} onChange={setTakeupNewDate} />
                 </div>
                 <div className="space-y-2">
                   <Label>Motivo do Reagendamento</Label>
@@ -693,7 +694,7 @@ export function AnaliseDetalhe({ analysis: initialAnalysis, responsibles, curren
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Data Entrega do Relatório *</Label>
-                <Input type="date" value={reportDate} onChange={e => setReportDate(e.target.value)} />
+                <DateInput value={reportDate} onChange={setReportDate} />
               </div>
               <div className="space-y-2">
                 <Label>Toneladas Aprovadas *</Label>

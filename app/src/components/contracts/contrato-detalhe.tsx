@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -269,7 +270,7 @@ export function ContratoDetalhe({ contract: initialContract, currentUserId }: Co
             </div>
             <div className="space-y-2">
               <Label>Data de Vencimento</Label>
-              <Input type="date" value={instEditDue} onChange={e => setInstEditDue(e.target.value)} />
+              <DateInput value={instEditDue} onChange={setInstEditDue} />
             </div>
             <div className="space-y-2">
               <Label>Status</Label>

@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ArrowLeft, Loader2, Save } from 'lucide-react'
@@ -110,10 +111,9 @@ export function NovaAgendaForm({ contracts, analyses }: NovaAgendaFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Data *</Label>
-              <Input
-                type="date"
+              <DateInput
                 value={scheduledDate}
-                onChange={e => setScheduledDate(e.target.value)}
+                onChange={setScheduledDate}
               />
             </div>
             <div className="space-y-2">

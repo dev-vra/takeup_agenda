@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
@@ -250,11 +251,9 @@ export function NovaAnaliseWizard({
 
             <div className="space-y-2">
               <Label>Data de Recebimento *</Label>
-              <Input
-                type="date"
+              <DateInput
                 value={hviReceivedDate}
-                onChange={e => setHviReceivedDate(e.target.value)}
-                max={new Date().toISOString().split('T')[0]}
+                onChange={setHviReceivedDate}
               />
             </div>
 
