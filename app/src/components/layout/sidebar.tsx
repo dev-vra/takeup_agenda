@@ -39,26 +39,15 @@ export function Sidebar() {
       collapsed ? 'w-16' : 'w-60'
     )}>
       {/* Logo */}
-      <div className={cn(
-        'flex items-center h-16 border-b border-slate-200 px-4 shrink-0',
-        collapsed ? 'justify-center' : 'gap-3'
-      )}>
-        <div className="shrink-0 flex items-center justify-center">
-          <Image
-            src="/logo-laferlins.png"
-            alt="Laferlins"
-            width={collapsed ? 32 : 40}
-            height={collapsed ? 32 : 40}
-            className="object-contain"
-            priority
-          />
-        </div>
-        {!collapsed && (
-          <div className="overflow-hidden">
-            <p className="text-sm font-bold text-slate-800 leading-none">Laferlins</p>
-            <p className="text-xs text-slate-500 mt-0.5">Agenda TakeUp</p>
-          </div>
-        )}
+      <div className="flex items-center justify-center h-20 border-b border-slate-200 px-3 shrink-0">
+        <Image
+          src="/logo-laferlins.png"
+          alt="Laferlins"
+          width={collapsed ? 32 : 56}
+          height={collapsed ? 32 : 56}
+          className="object-contain transition-all duration-300"
+          priority
+        />
       </div>
 
       {/* Nav */}

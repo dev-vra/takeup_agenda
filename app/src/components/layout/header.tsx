@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { NotificationBell } from './notification-bell'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -58,9 +59,19 @@ export function Header({ title }: HeaderProps) {
 
   return (
     <header className="h-16 border-b bg-white flex items-center justify-between px-6 shrink-0">
-      {title && (
-        <h1 className="text-lg font-semibold text-slate-800">{title}</h1>
-      )}
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="flex flex-col"
+      >
+        <span className="text-base font-bold text-slate-800 leading-tight tracking-tight">
+          Agenda TakeUp
+        </span>
+        {title && (
+          <span className="text-xs text-slate-400 leading-none">{title}</span>
+        )}
+      </motion.div>
       <div className="flex items-center gap-3 ml-auto">
         <NotificationBell />
 

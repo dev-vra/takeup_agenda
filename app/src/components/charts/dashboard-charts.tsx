@@ -72,31 +72,33 @@ export function DashboardCharts({ openAnalyses }: DashboardChartsProps) {
       <div className="bg-white rounded-xl border border-slate-200 p-4">
         <p className="text-sm font-semibold text-slate-700 mb-3">Análises em Aberto por Status</p>
         {pieData.length === 0 ? (
-          <div className="flex items-center justify-center h-[200px] text-slate-400 text-sm">
+          <div className="flex items-center justify-center h-[220px] text-slate-400 text-sm">
             Nenhuma análise em aberto
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie
                 data={pieData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
-                cy="50%"
-                outerRadius={70}
-                label={({ name, value }) => `${name}: ${value}`}
-                labelLine={false}
+                cy="45%"
+                outerRadius={75}
+                innerRadius={40}
               >
                 {pieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
               <Legend
+                iconType="circle"
+                iconSize={8}
                 formatter={(value) => <span style={{ fontSize: 11, color: '#64748b' }}>{value}</span>}
               />
               <Tooltip
                 contentStyle={{ borderRadius: 8, fontSize: 12, border: '1px solid #e2e8f0' }}
+                formatter={(value, name) => [`${value} análise(s)`, name]}
               />
             </PieChart>
           </ResponsiveContainer>

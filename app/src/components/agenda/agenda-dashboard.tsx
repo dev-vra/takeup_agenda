@@ -85,17 +85,17 @@ export function AgendaDashboard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 0 }}
           >
-            <Link href="/analises" className="block">
+            <Link href="/analises" className="block group">
               <Card className="hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer">
                 <CardContent className="py-4 px-4 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-blue-50">
                     <Activity className="h-5 w-5 text-blue-600" />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div>
                     <p className="text-xs text-slate-500">Análises em Aberto</p>
                     <p className="text-xl font-bold text-slate-800">{kpis.activeAnalyses}</p>
+                    <p className="text-[10px] text-blue-500 font-medium group-hover:underline">Ver mais →</p>
                   </div>
-                  <span className="text-xs text-blue-600 font-medium shrink-0">Ver mais →</span>
                 </CardContent>
               </Card>
             </Link>

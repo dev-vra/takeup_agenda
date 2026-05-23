@@ -18,7 +18,7 @@ interface ReportInput {
 }
 
 export async function generateReport(input: ReportInput): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' })
 
   const contextData = buildContext(input)
   const prompt = `${SYSTEM_CONTEXT}

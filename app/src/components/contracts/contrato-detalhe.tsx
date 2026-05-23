@@ -54,6 +54,14 @@ export function ContratoDetalhe({ contract: initialContract, currentUserId }: Co
   const [archiveOpen, setArchiveOpen] = useState(false)
   const [archiveLoading, setArchiveLoading] = useState(false)
 
+  // Installment edit state
+  const [instEditOpen, setInstEditOpen] = useState(false)
+  const [instEditLoading, setInstEditLoading] = useState(false)
+  const [instEditId, setInstEditId] = useState('')
+  const [instEditQty, setInstEditQty] = useState('')
+  const [instEditDue, setInstEditDue] = useState('')
+  const [instEditStatus, setInstEditStatus] = useState('')
+
   async function handleEditSave() {
     setEditLoading(true)
     try {
@@ -102,6 +110,40 @@ export function ContratoDetalhe({ contract: initialContract, currentUserId }: Co
       setArchiveOpen(false)
     }
   }
+  async function handleInstEditSave() {
+    setInstEditLoading(true)
+    try {
+      const res = await fetch(`/api/installments/${instEditId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scheduled_quantity: parseFloat(instEditQty),
+          due_date: instEditDue || null,
+          status: instEditStatus,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'Erro ao salvar parcela')
+      }
+      setC(prev => ({
+        ...prev,
+        installments: prev.installments.map(i =>
+          i.id === instEditId
+            ? { ...i, scheduled_quantity: parseFloat(instEditQty), due_date: instEditDue, status: instEditStatus as ContractInstallment['status'] }
+            : i
+        ),
+      }))
+      toast.success('Parcela atualizada!')
+      setInstEditOpen(false)
+      router.refresh()
+    } catch (e) {
+      toast.error(`Erro: ${String(e)}`)
+    } finally {
+      setInstEditLoading(false)
+    }
+  }
+
   const pct = c.total_quantity > 0 ? ((c.total_takeup || 0) / c.total_quantity) * 100 : 0
   const installments = (c as typeof initialContract).installments || []
 
@@ -214,6 +256,45 @@ export function ContratoDetalhe({ contract: initialContract, currentUserId }: Co
         </DialogContent>
       </Dialog>
 
+      {/* Installment Edit Dialog */}
+      <Dialog open={instEditOpen} onOpenChange={setInstEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Parcela</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Quantidade Programada (t)</Label>
+              <Input type="number" value={instEditQty} onChange={e => setInstEditQty(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Data de Vencimento</Label>
+              <Input type="date" value={instEditDue} onChange={e => setInstEditDue(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <select
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
+                value={instEditStatus}
+                onChange={e => setInstEditStatus(e.target.value)}
+              >
+                <option value="pendente">Pendente</option>
+                <option value="em_andamento">Em Andamento</option>
+                <option value="concluida">Concluída</option>
+                <option value="atrasada">Atrasada</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setInstEditOpen(false)}>Cancelar</Button>
+            <Button onClick={handleInstEditSave} disabled={instEditLoading} className="bg-blue-700 hover:bg-blue-800 gap-1.5">
+              {instEditLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+              Salvar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard label="Qtd Contratada" value={`${c.total_quantity.toLocaleString('pt-BR')}t`} />
@@ -296,9 +377,27 @@ export function ContratoDetalhe({ contract: initialContract, currentUserId }: Co
               {selected ? (
                 <Card className="sticky top-4">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-base">
-                      Parcela {formatMonth(selected.reference_month)}
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">
+                        Parcela {formatMonth(selected.reference_month)}
+                      </CardTitle>
+                      {isAdmin && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1.5 h-7 text-xs"
+                          onClick={() => {
+                            setInstEditId(selected.id)
+                            setInstEditQty(String(selected.scheduled_quantity))
+                            setInstEditDue(selected.due_date || '')
+                            setInstEditStatus(selected.status)
+                            setInstEditOpen(true)
+                          }}
+                        >
+                          <Pencil className="h-3 w-3" /> Editar
+                        </Button>
+                      )}
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="grid grid-cols-2 gap-3 text-sm">
