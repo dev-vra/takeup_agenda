@@ -94,7 +94,6 @@ export function AgendaDashboard({
                   <div>
                     <p className="text-xs text-slate-500">Análises em Aberto</p>
                     <p className="text-xl font-bold text-slate-800">{kpis.activeAnalyses}</p>
-                    <p className="text-[10px] text-blue-500 font-medium group-hover:underline">Ver mais →</p>
                   </div>
                 </CardContent>
               </Card>

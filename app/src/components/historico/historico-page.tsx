@@ -7,8 +7,6 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Plus, Pencil, Trash2, Filter, Download, Clock, FileText, Package, Calendar, ClipboardList, Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -80,8 +78,6 @@ export function HistoricoPage({ logs, contracts }: HistoricoPageProps) {
   const [contractFilter, setContractFilter] = useState('__all__')
   const [dateFrom, setDateFrom]           = useState('')
   const [dateTo, setDateTo]               = useState('')
-  const [exportOpen, setExportOpen]       = useState(false)
-  const [exportItems, setExportItems]     = useState<string[]>([])
 
   const filtered = useMemo(() => logs.filter(log => {
     if (entityFilter  !== '__all__' && log.entity_type !== entityFilter)  return false
@@ -105,12 +101,8 @@ export function HistoricoPage({ logs, contracts }: HistoricoPageProps) {
     setDateFrom(''); setDateTo(''); setSearch('')
   }
 
-  function toggleExportItem(id: string) {
-    setExportItems(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
-  }
-
   function handleExport() {
-    const selected = filtered.filter(l => exportItems.includes(l.id))
+    const selected = filtered.slice(0, 200)
     const rows = selected.map(l => {
       const cfg    = ACTION_CONFIG[l.action]
       const diffs  = diffValues(l.old_values as Record<string,unknown>, l.new_values as Record<string,unknown>)
@@ -125,27 +117,44 @@ export function HistoricoPage({ logs, contracts }: HistoricoPageProps) {
       </tr>`
     }).join('')
 
-    const html = [
-      '<!DOCTYPE html><html><head><meta charset="utf-8"><style>',
-      'body{font-family:Arial,sans-serif;margin:0;padding:32px;color:#1e293b}',
-      '.hdr{background:#1e3a5f;color:#fff;padding:24px 32px;margin:-32px -32px 32px}',
-      '.hdr h1{margin:0;font-size:20px}.hdr p{margin:4px 0 0;font-size:13px;opacity:.8}',
-      'table{width:100%;border-collapse:collapse}',
-      'th{background:#f8fafc;padding:10px 12px;text-align:left;font-size:12px;color:#64748b;border-bottom:2px solid #e2e8f0}',
-      '.ftr{margin-top:32px;font-size:11px;color:#94a3b8;text-align:center;border-top:1px solid #e2e8f0;padding-top:16px}',
-      '</style></head><body>',
-      `<div class="hdr"><h1>LAFERLINS CORRETORA</h1><p>Histórico de Atividades — Exportado em ${new Date().toLocaleString('pt-BR')}</p></div>`,
-      '<table><thead><tr><th>Data/Hora</th><th>Usuário</th><th>Entidade</th><th>Ação</th><th>Detalhes</th></tr></thead>',
-      `<tbody>${rows}</tbody></table>`,
-      '<div class="ftr">Gerado pelo sistema Agenda TakeUp — Laferlins Corretora</div>',
-      '</body></html>',
-    ].join('')
+    const logoUrl = window.location.origin + '/logo-laferlins.png'
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;padding:40px;color:#1e293b;font-size:12px}
+  .hdr{display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:2px solid #1d4ed8;margin-bottom:28px}
+  .hdr img{width:56px;height:56px;object-fit:contain}
+  .hdr-text h1{font-size:18px;font-weight:bold;color:#1e3a5f}
+  .hdr-text p{font-size:11px;color:#64748b;margin-top:3px}
+  .hdr-right{margin-left:auto;text-align:right;font-size:11px;color:#64748b}
+  table{width:100%;border-collapse:collapse;margin-top:4px}
+  th{background:#f1f5f9;padding:9px 10px;text-align:left;font-size:11px;color:#64748b;border-bottom:2px solid #cbd5e1;font-weight:600}
+  td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600}
+  .ftr{margin-top:36px;font-size:10px;color:#94a3b8;text-align:center;border-top:1px solid #e2e8f0;padding-top:14px}
+  @media print{@page{margin:16mm}body{padding:0}}
+</style>
+</head><body>
+<div class="hdr">
+  <img src="${logoUrl}" alt="Laferlins" />
+  <div class="hdr-text">
+    <h1>LAFERLINS CORRETORA</h1>
+    <p>Relatório de Histórico de Atividades</p>
+  </div>
+  <div class="hdr-right">Emitido em: ${new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'})}<br/>${filtered.length} registro(s) filtrado(s)</div>
+</div>
+<table>
+  <thead><tr><th>Data/Hora</th><th>Usuário</th><th>Entidade</th><th>Ação</th><th>Detalhes</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table>
+<div class="ftr">Agenda TakeUp — Laferlins Corretora &nbsp;|&nbsp; Gerado automaticamente pelo sistema</div>
+</body></html>`
 
     const blob = new Blob([html], { type: 'text/html' })
     const url  = URL.createObjectURL(blob)
     const win  = window.open(url, '_blank')
     if (win) { win.onload = () => { win.print(); URL.revokeObjectURL(url) } }
-    setExportOpen(false)
   }
 
   return (
@@ -156,9 +165,8 @@ export function HistoricoPage({ logs, contracts }: HistoricoPageProps) {
           <h1 className="text-xl font-bold text-slate-800">Histórico de Atividades</h1>
           <p className="text-sm text-slate-500 mt-0.5">{filtered.length} registro(s)</p>
         </div>
-        <Button onClick={() => { setExportItems(filtered.slice(0, 50).map(l => l.id)); setExportOpen(true) }}
-          variant="outline" size="sm" className="gap-2">
-          <Download className="h-4 w-4" /> Exportar Relatório
+        <Button onClick={handleExport} variant="outline" size="sm" className="gap-2" disabled={filtered.length === 0}>
+          <Download className="h-4 w-4" /> Exportar PDF
         </Button>
       </motion.div>
 
@@ -265,39 +273,6 @@ export function HistoricoPage({ logs, contracts }: HistoricoPageProps) {
         </AnimatePresence>
       </div>
 
-      {/* Export Dialog */}
-      <Dialog open={exportOpen} onOpenChange={setExportOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Exportar Relatório de Histórico</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <p className="text-sm text-slate-500">Selecione os registros a incluir:</p>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => setExportItems(filtered.map(l => l.id))}>Todos</Button>
-              <Button size="sm" variant="outline" onClick={() => setExportItems([])}>Limpar</Button>
-              <span className="ml-auto text-xs text-slate-400 self-center">{exportItems.length} selecionado(s)</span>
-            </div>
-            <div className="max-h-60 overflow-y-auto space-y-0.5 border rounded-lg p-2">
-              {filtered.map(log => {
-                const cfg = ACTION_CONFIG[log.action]
-                return (
-                  <label key={log.id} className="flex items-center gap-2.5 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                    <Checkbox checked={exportItems.includes(log.id)} onCheckedChange={() => toggleExportItem(log.id)} />
-                    <span className={cn('text-[10px] px-1.5 py-0.5 rounded font-semibold border', cfg.color)}>{cfg.label}</span>
-                    <span className="text-xs text-slate-600 flex-1 truncate">{entityLabel(log.entity_type)} — {log.user?.name ?? '—'}</span>
-                    <span className="text-[10px] text-slate-400">{new Date(log.created_at).toLocaleDateString('pt-BR')}</span>
-                  </label>
-                )
-              })}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <Button variant="outline" onClick={() => setExportOpen(false)}>Cancelar</Button>
-              <Button onClick={handleExport} disabled={exportItems.length === 0} className="bg-blue-700 hover:bg-blue-800">
-                <Download className="h-4 w-4 mr-1.5" /> Gerar e Imprimir
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
