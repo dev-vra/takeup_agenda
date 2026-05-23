@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { sendEmail, buildNotificationEmail } from '@/lib/email/resend'
+// import { sendEmail, buildNotificationEmail } from '@/lib/email/resend'
+// E-mail desabilitado temporariamente
 
 // Called by Vercel Cron: every morning at 8am BRT
 export async function GET(request: Request) {
@@ -142,22 +143,8 @@ export async function GET(request: Request) {
     )
   }
 
-  // Send emails (one per user, grouped)
-  for (const user of users) {
-    const userNotifs = notifications.filter(n => n.user_id === user.id)
-    if (!userNotifs.length) continue
-
-    try {
-      const html = buildNotificationEmail(
-        `${userNotifs.length} notificação(ões) — Laferlins Agenda TakeUp`,
-        userNotifs.map(n => `<strong>${n.title}</strong>: ${n.message}`).join('<br><br>'),
-        `${process.env.NEXT_PUBLIC_APP_URL}/agenda`
-      )
-      await sendEmail({ to: user.email, subject: `[Laferlins] ${userNotifs.length} alerta(s) operacional(is)`, html })
-    } catch (e) {
-      console.error(`Email error for ${user.email}:`, e)
-    }
-  }
+  // E-mail desabilitado — habilitar quando configurar Resend
+  // for (const user of users) { ... }
 
   return NextResponse.json({ notified: notifications.length })
 }

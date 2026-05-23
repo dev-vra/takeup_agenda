@@ -1,6 +1,7 @@
-import { Resend } from 'resend'
+// import { Resend } from 'resend'
+// E-mail desabilitado temporariamente — habilitar quando configurar Resend
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
+// const resend = new Resend(process.env.RESEND_API_KEY!)
 
 interface SendEmailParams {
   to: string
@@ -9,6 +10,12 @@ interface SendEmailParams {
 }
 
 export async function sendEmail({ to, subject, html }: SendEmailParams) {
+  if (!process.env.RESEND_API_KEY) {
+    console.log(`[Email disabled] To: ${to} | Subject: ${subject}`)
+    return { id: 'disabled' }
+  }
+  const { Resend } = await import('resend')
+  const resend = new Resend(process.env.RESEND_API_KEY)
   return resend.emails.send({
     from: 'Laferlins <notificacoes@laferlins.com.br>',
     to,
