@@ -39,15 +39,10 @@ CREATE TYPE report_type AS ENUM ('contrato','analise','parcela','conjunto_analis
 CREATE TYPE responsible_type AS ENUM ('hvi', 'takeup', 'geral');
 CREATE TYPE audit_action AS ENUM ('create', 'update', 'delete');
 
--- ─── 2) FUNÇÕES utilitárias ─────────────────────────────────
+-- ─── 2) FUNÇÃO set_updated_at (não depende de tabelas) ──────
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN NEW.updated_at = now(); RETURN NEW; END;
-$$;
-
-CREATE OR REPLACE FUNCTION current_user_role()
-RETURNS user_role LANGUAGE sql SECURITY DEFINER AS $$
-  SELECT role FROM profiles WHERE id = auth.uid()
 $$;
 
 -- ─── 3) TABELAS ─────────────────────────────────────────────
@@ -59,6 +54,12 @@ CREATE TABLE profiles (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- current_user_role() depende de profiles, por isso vem depois da tabela
+CREATE OR REPLACE FUNCTION current_user_role()
+RETURNS user_role LANGUAGE sql SECURITY DEFINER AS $$
+  SELECT role FROM profiles WHERE id = auth.uid()
+$$;
 
 -- Novos usuários criados via Supabase Auth nascem exigindo troca de senha
 CREATE OR REPLACE FUNCTION handle_new_user()
