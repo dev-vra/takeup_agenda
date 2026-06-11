@@ -39,11 +39,12 @@ const ROLE_COLOR: Record<UserRole, string> = {
 interface UserForm {
   email: string
   password: string
+  confirmPassword: string
   name: string
   role: UserRole
 }
 
-const EMPTY_FORM: UserForm = { email: '', password: '', name: '', role: 'leitor' }
+const EMPTY_FORM: UserForm = { email: '', password: '', confirmPassword: '', name: '', role: 'leitor' }
 
 export default function UsuariosPage() {
   const [users, setUsers] = useState<Profile[]>([])
@@ -79,14 +80,21 @@ export default function UsuariosPage() {
 
   function openEdit(user: Profile) {
     setEditingUser(user)
-    setForm({ email: user.email, password: '', name: user.name, role: user.role })
+    setForm({ email: user.email, password: '', confirmPassword: '', name: user.name, role: user.role })
     setDialogOpen(true)
   }
 
   async function handleSave() {
     if (!form.name.trim() || !form.role) return toast.error('Preencha todos os campos obrigatórios')
     if (!editingUser && (!form.email.trim() || !form.password.trim())) {
-      return toast.error('E-mail e senha são obrigatórios para novos usuários')
+      return toast.error('E-mail e senha provisória são obrigatórios para novos usuários')
+    }
+    // Confirmação de senha (provisória ao criar, ou ao redefinir na edição)
+    if (form.password && form.password !== form.confirmPassword) {
+      return toast.error('As senhas não coincidem')
+    }
+    if (form.password && form.password.length < 6) {
+      return toast.error('A senha deve ter ao menos 6 caracteres')
     }
 
     setSaving(true)
@@ -224,7 +232,7 @@ export default function UsuariosPage() {
               </div>
             )}
             <div className="space-y-1.5">
-              <Label>{editingUser ? 'Nova senha (deixe em branco para manter)' : 'Senha *'}</Label>
+              <Label>{editingUser ? 'Nova senha provisória (deixe em branco para manter)' : 'Senha provisória *'}</Label>
               <Input
                 type="password"
                 placeholder="••••••••"
@@ -232,6 +240,20 @@ export default function UsuariosPage() {
                 onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
               />
             </div>
+            {(form.password || !editingUser) && (
+              <div className="space-y-1.5">
+                <Label>Confirmar senha provisória *</Label>
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={form.confirmPassword}
+                  onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
+                />
+                <p className="text-[11px] text-slate-400">
+                  O usuário será obrigado a definir uma senha pessoal no primeiro acesso.
+                </p>
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label>Perfil de acesso *</Label>
               <Select value={form.role} onValueChange={v => setForm(f => ({ ...f, role: v as UserRole }))}>

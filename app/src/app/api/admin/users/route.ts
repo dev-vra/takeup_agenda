@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
     name,
     email,
     role,
+    must_change_password: true,
   })
   if (profileError) {
     await admin.auth.admin.deleteUser(authData.user.id)
