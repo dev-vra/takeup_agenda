@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1e293b; font-size: 11pt; line-height: 1.55; margin: 0; }
+  h1 { font-size: 26pt; color: #1e3a8a; margin: 0 0 4px; }
+  h2 { font-size: 17pt; color: #1e3a8a; border-bottom: 2px solid #dbeafe; padding-bottom: 6px; margin: 0 0 14px; }
+  h3 { font-size: 13pt; color: #1d4ed8; margin: 18px 0 6px; }
+  p { margin: 0 0 10px; }
+  .cover { height: 247mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(160deg,#1e3a8a,#1e293b); color: #fff; margin: -18mm -16mm 0; padding: 0 30mm; }
+  .cover h1 { color: #fff; font-size: 40pt; }
+  .cover .sub { font-size: 15pt; color: #bfdbfe; margin-top: 8px; }
+  .cover .meta { margin-top: 40px; font-size: 11pt; color: #cbd5e1; }
+  .badge { display:inline-block; background:#3b82f6; color:#fff; border-radius:999px; padding:4px 14px; font-size:10pt; letter-spacing:.5px; margin-bottom:24px; }
+  .page { page-break-before: always; }
+  figure { margin: 12px 0 18px; page-break-inside: avoid; }
+  figure img { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  figcaption { font-size: 9pt; color: #64748b; margin-top: 6px; text-align: center; font-style: italic; }
+  .note { background:#eff6ff; border-left:4px solid #3b82f6; padding:10px 14px; border-radius:0 6px 6px 0; margin:12px 0; font-size:10.5pt; }
+  .warn { background:#fff7ed; border-left:4px solid #f97316; padding:10px 14px; border-radius:0 6px 6px 0; margin:12px 0; font-size:10.5pt; }
+  ul, ol { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 5px; }
+  table { width:100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 10pt; }
+  th, td { border: 1px solid #cbd5e1; padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background:#1e3a8a; color:#fff; font-weight:600; }
+  tr:nth-child(even) td { background:#f8fafc; }
+  code { background:#f1f5f9; padding:1px 6px; border-radius:4px; font-size:9.5pt; color:#be123c; }
+  .toc a { color:#1d4ed8; text-decoration:none; }
+  .toc li { margin-bottom:7px; font-size:11.5pt; }
+  .kbd { background:#1e293b;color:#fff;border-radius:4px;padding:1px 7px;font-size:9pt; }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="cover">
+  <div class="badge">MANUAL DO USUÁRIO</div>
+  <h1>Agenda TakeUp</h1>
+  <div class="sub">Controle de HVI &amp; TakeUp — Laferlins</div>
+  <div class="meta">
+    Versão 1.0 &nbsp;•&nbsp; Junho de 2026<br>
+    takeup-agenda.vercel.app
+  </div>
+</div>
+
+<!-- SUMÁRIO -->
+<div class="page">
+  <h2>Sumário</h2>
+  <ol class="toc">
+    <li><a href="#intro">Visão geral do sistema</a></li>
+    <li><a href="#perfis">Perfis de acesso</a></li>
+    <li><a href="#login">Acesso e primeiro login</a></li>
+    <li><a href="#dashboard">Agenda Operacional (Dashboard)</a></li>
+    <li><a href="#contratos">Contratos</a></li>
+    <li><a href="#analises">Análises (HVI &amp; TakeUp)</a></li>
+    <li><a href="#relatorios">Relatórios</a></li>
+    <li><a href="#historico">Histórico de atividades</a></li>
+    <li><a href="#usuarios">Gestão de usuários (Admin)</a></li>
+    <li><a href="#faq">Dúvidas frequentes</a></li>
+  </ol>
+</div>
+
+<!-- 1. INTRO -->
+<div class="page" id="intro">
+  <h2>1. Visão geral do sistema</h2>
+  <p>O <strong>Agenda TakeUp</strong> é a plataforma da Laferlins para o controle operacional de contratos de algodão, incluindo o acompanhamento de análises de <strong>HVI</strong> e do processo de <strong>TakeUp</strong> (retirada/aprovação de fardos), geração de relatórios profissionais e gestão de equipe.</p>
+
+  <h3>Principais módulos</h3>
+  <table>
+    <tr><th>Módulo</th><th>Para que serve</th></tr>
+    <tr><td>Agenda Operacional</td><td>Painel inicial com indicadores, gráfico de toneladas aprovadas e compromissos do dia.</td></tr>
+    <tr><td>Contratos</td><td>Cadastro e acompanhamento de contratos, com progresso de TakeUp e saldo pendente.</td></tr>
+    <tr><td>Análises</td><td>Registro de análises de HVI e TakeUp por contrato/parcela, em assistente de 3 etapas.</td></tr>
+    <tr><td>Relatórios</td><td>Geração de relatórios com IA, exportação em Excel (.xlsx) e Word (.docx) e construtor visual.</td></tr>
+    <tr><td>Histórico</td><td>Trilha de auditoria de todas as ações realizadas no sistema.</td></tr>
+    <tr><td>Usuários</td><td>Criação e gestão de usuários e perfis (exclusivo para administradores).</td></tr>
+  </table>
+
+  <div class="note">A navegação fica sempre disponível no menu lateral esquerdo. O botão <strong>Recolher</strong>, no rodapé do menu, oculta os rótulos para ampliar a área de trabalho.</div>
+</div>
+
+<!-- 2. PERFIS -->
+<div class="page" id="perfis">
+  <h2>2. Perfis de acesso</h2>
+  <p>Cada usuário recebe um perfil que define o que ele pode fazer no sistema:</p>
+  <table>
+    <tr><th>Perfil</th><th>Permissões</th></tr>
+    <tr><td><strong>Administrador</strong></td><td>Acesso total. Cria, edita e exclui usuários, redefine senhas e acessa todos os módulos.</td></tr>
+    <tr><td><strong>Consultor</strong></td><td>Registra contratos, análises e relatórios. Não gerencia usuários.</td></tr>
+    <tr><td><strong>Leitura</strong></td><td>Apenas visualiza dados e relatórios, sem permissão para editar.</td></tr>
+  </table>
+  <div class="note">O perfil é definido no momento da criação do usuário e pode ser alterado a qualquer momento por um administrador na tela de <strong>Gestão de Usuários</strong>.</div>
+</div>
+
+<!-- 3. LOGIN -->
+<div class="page" id="login">
+  <h2>3. Acesso e primeiro login</h2>
+  <h3>3.1 Entrar na plataforma</h3>
+  <p>Acesse <code>takeup-agenda.vercel.app</code>, informe o <strong>e-mail</strong> e a <strong>senha</strong> e clique em <strong>Entrar</strong>.</p>
+  <figure>
+    <img src="shots/01-login.png">
+    <figcaption>Tela de login da plataforma.</figcaption>
+  </figure>
+
+  <h3>3.2 Troca de senha no primeiro acesso</h3>
+  <p>Usuários criados pelo administrador recebem uma <strong>senha provisória</strong>. No primeiro acesso, o sistema obriga a definição de uma senha pessoal: digite a nova senha duas vezes e clique em <strong>Alterar senha e continuar</strong>.</p>
+  <figure>
+    <img src="shots/16-alterar-senha.png">
+    <figcaption>Tela de primeiro acesso — definição de senha pessoal.</figcaption>
+  </figure>
+  <div class="warn">Enquanto a senha provisória não for trocada, o usuário não consegue acessar os demais módulos — o sistema sempre o redireciona para esta tela.</div>
+</div>
+
+<!-- 4. DASHBOARD -->
+<div class="page" id="dashboard">
+  <h2>4. Agenda Operacional (Dashboard)</h2>
+  <p>É a primeira tela após o login. Reúne os principais indicadores e os compromissos do dia.</p>
+  <figure>
+    <img src="shots/03-dashboard.png">
+    <figcaption>Painel inicial com indicadores e gráfico de toneladas aprovadas.</figcaption>
+  </figure>
+  <h3>O que você vê aqui</h3>
+  <ul>
+    <li><strong>Cartões de indicadores:</strong> Análises em Aberto, Finalizadas no Mês, Tons Aprovadas (Mês) e Compromissos Hoje.</li>
+    <li><strong>Gráfico “Toneladas Aprovadas — Últimos 6 Meses”:</strong> evolução do volume aprovado.</li>
+    <li><strong>Análises em Aberto por Status:</strong> visão rápida do que está pendente.</li>
+    <li><strong>Abas inferiores:</strong> Hoje, Análises em Andamento, Próximos TakeUps e Atividade Recente.</li>
+  </ul>
+  <p>Os botões <strong>Nova Análise</strong> e <strong>Novo Lançamento</strong> (canto superior direito) dão acesso rápido às ações mais comuns.</p>
+
+  <h3>4.1 Novo lançamento na agenda</h3>
+  <p>Em <strong>Novo Lançamento</strong>, registre um evento na agenda operacional: título, tipo, data, horário e descrição, podendo vinculá-lo a uma análise e/ou contrato.</p>
+  <figure>
+    <img src="shots/05-agenda-nova.png">
+    <figcaption>Formulário de novo lançamento na agenda.</figcaption>
+  </figure>
+</div>
+
+<!-- 5. CONTRATOS -->
+<div class="page" id="contratos">
+  <h2>5. Contratos</h2>
+  <p>Lista todos os contratos ativos, com indicadores de total contratado, TakeUp realizado e saldo pendente, além de uma barra de progresso global.</p>
+  <figure>
+    <img src="shots/06-contratos.png">
+    <figcaption>Listagem de contratos com indicadores e progresso de TakeUp.</figcaption>
+  </figure>
+  <ul>
+    <li>Use a <strong>busca</strong> para localizar por contrato, vendedor, comprador ou origem.</li>
+    <li><strong>Nova Análise:</strong> inicia uma análise a partir de um contrato.</li>
+    <li>Clique em um contrato da lista para ver seus detalhes, parcelas e análises.</li>
+  </ul>
+
+  <h3>5.1 Importar contratos via planilha</h3>
+  <p>Em <strong>Importar Planilha</strong>, é possível colar dados diretamente do Excel. Copie o cabeçalho + as linhas desejadas (<span class="kbd">Ctrl+C</span>), cole na área indicada (<span class="kbd">Ctrl+V</span>) e clique em <strong>Analisar Dados</strong> para conferir antes de confirmar.</p>
+  <figure>
+    <img src="shots/07-contratos-importar.png">
+    <figcaption>Importação de contratos por colagem de planilha.</figcaption>
+  </figure>
+</div>
+
+<!-- 6. ANÁLISES -->
+<div class="page" id="analises">
+  <h2>6. Análises (HVI &amp; TakeUp)</h2>
+  <p>Centraliza o histórico de análises. É possível buscar por contrato, produtor, comprador ou cidade e filtrar por status.</p>
+  <figure>
+    <img src="shots/08-analises.png">
+    <figcaption>Histórico de análises com busca e filtro de status.</figcaption>
+  </figure>
+
+  <h3>6.1 Nova análise (assistente em 3 etapas)</h3>
+  <p>O cadastro de análise é guiado em três etapas:</p>
+  <ol>
+    <li><strong>Contrato &amp; Parcela</strong> — seleciona o contrato e a parcela.</li>
+    <li><strong>HVI</strong> — informa os dados da análise de fibra.</li>
+    <li><strong>Revisar</strong> — confere e confirma o registro.</li>
+  </ol>
+  <figure>
+    <img src="shots/09-analises-nova.png">
+    <figcaption>Etapa 1 do assistente de nova análise.</figcaption>
+  </figure>
+</div>
+
+<!-- 7. RELATÓRIOS -->
+<div class="page" id="relatorios">
+  <h2>7. Relatórios</h2>
+  <p>Lista os relatórios já gerados e dá acesso às ferramentas de criação. É possível buscar, filtrar por contrato e exibir relatórios inativos.</p>
+  <figure>
+    <img src="shots/10-relatorios.png">
+    <figcaption>Listagem de relatórios.</figcaption>
+  </figure>
+
+  <h3>7.1 Gerar relatório com IA</h3>
+  <p>Escolha o tipo de relatório (Contrato, Análise, Conjunto de Análises ou Personalizado), informe o título, selecione o contrato e, se quiser, adicione uma instrução para orientar o foco do relatório. A IA já recebe o contexto completo do sistema.</p>
+  <figure>
+    <img src="shots/11-relatorios-gerar.png">
+    <figcaption>Geração de relatório assistida por IA.</figcaption>
+  </figure>
+
+  <h3>7.2 Construtor (Builder) e exportação</h3>
+  <p>O <strong>Builder</strong> permite montar a estrutura do relatório seção por seção: definir título, subtítulo, rodapé, orientação (retrato/paisagem), agrupamento, ordenação e os campos exibidos. Ao final, exporte em <strong>Excel (.xlsx)</strong> ou gere em <strong>Word (.docx)</strong>. Estruturas podem ser salvas como template para reutilização.</p>
+  <figure>
+    <img src="shots/12-relatorios-builder.png">
+    <figcaption>Construtor visual de relatórios com exportação em Excel e Word.</figcaption>
+  </figure>
+  <div class="note">A exportação em Excel gera um arquivo profissional com agrupamento por contrato, comentários consolidados e subtotais.</div>
+</div>
+
+<!-- 8. HISTÓRICO -->
+<div class="page" id="historico">
+  <h2>8. Histórico de atividades</h2>
+  <p>Trilha de auditoria de tudo o que acontece no sistema. Filtre por entidade, tipo de ação, contrato e período, e exporte o resultado em PDF.</p>
+  <figure>
+    <img src="shots/13-historico.png">
+    <figcaption>Histórico de atividades com filtros e exportação em PDF.</figcaption>
+  </figure>
+</div>
+
+<!-- 9. USUÁRIOS -->
+<div class="page" id="usuarios">
+  <h2>9. Gestão de usuários (Admin)</h2>
+  <p>Disponível apenas para administradores. Lista todos os usuários com nome, e-mail, perfil e data de criação.</p>
+  <figure>
+    <img src="shots/14-usuarios.png">
+    <figcaption>Tela de Gestão de Usuários.</figcaption>
+  </figure>
+
+  <h3>9.1 Criar um novo usuário</h3>
+  <p>Clique em <strong>Novo Usuário</strong> e preencha:</p>
+  <ul>
+    <li><strong>Nome completo</strong></li>
+    <li><strong>E-mail</strong> (usado para login)</li>
+    <li><strong>Senha provisória</strong> — digitada e confirmada (mínimo de 6 caracteres)</li>
+    <li><strong>Perfil de acesso</strong> — Administrador, Consultor ou Leitura</li>
+  </ul>
+  <figure>
+    <img src="shots/15-usuario-novo-dialog.png">
+    <figcaption>Formulário de criação de novo usuário.</figcaption>
+  </figure>
+  <div class="note">O novo usuário é obrigado a definir uma senha pessoal no primeiro acesso (ver seção 3.2).</div>
+
+  <h3>9.2 Editar, redefinir senha e excluir</h3>
+  <ul>
+    <li><strong>Editar</strong> (ícone de lápis): altera nome, perfil e, opcionalmente, redefine a senha. Ao redefinir, a nova senha vira provisória e a troca é exigida no próximo login.</li>
+    <li><strong>Excluir</strong> (ícone de lixeira): remove o usuário após confirmação. Não é possível excluir a própria conta.</li>
+  </ul>
+</div>
+
+<!-- 10. FAQ -->
+<div class="page" id="faq">
+  <h2>10. Dúvidas frequentes</h2>
+  <h3>Esqueci minha senha. O que faço?</h3>
+  <p>Solicite a um administrador que redefina sua senha na tela de Gestão de Usuários. Você receberá uma senha provisória e definirá uma nova no próximo acesso.</p>
+
+  <h3>Não consigo acessar os módulos, só a tela de troca de senha.</h3>
+  <p>Sua senha ainda é provisória. Defina uma senha pessoal para liberar o acesso completo.</p>
+
+  <h3>Não vejo o menu “Usuários”.</h3>
+  <p>Esse módulo é exclusivo para o perfil Administrador.</p>
+
+  <h3>Como exporto um relatório em Excel ou Word?</h3>
+  <p>Use o <strong>Builder</strong> em Relatórios e clique em <strong>Exportar Excel (.xlsx)</strong> ou <strong>Gerar Relatório (.docx)</strong>.</p>
+
+  <div class="note" style="margin-top:30px;">Em caso de dúvidas não cobertas neste manual, utilize o link <em>“Problemas com o acesso? Contate o administrador.”</em> na tela de login ou contate o administrador do sistema.</div>
+</div>
+
+</body>
+</html>
