@@ -44,13 +44,13 @@ export async function POST(request: NextRequest) {
   })
   if (authError) return NextResponse.json({ error: authError.message }, { status: 500 })
 
-  const { error: profileError } = await admin.from('profiles').insert({
+  const { error: profileError } = await admin.from('profiles').upsert({
     id: authData.user.id,
     name,
     email,
     role,
     must_change_password: true,
-  })
+  }, { onConflict: 'id' })
   if (profileError) {
     await admin.auth.admin.deleteUser(authData.user.id)
     return NextResponse.json({ error: profileError.message }, { status: 500 })
