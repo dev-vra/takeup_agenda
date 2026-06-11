@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { toast } from 'sonner'
 import {
   Plus, Trash2, GripVertical, Save, FileDown, ChevronDown, ChevronUp,
-  BookTemplate, Pencil, Check, X, Eye,
+  BookTemplate, Pencil, Check, X, Eye, FileSpreadsheet,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -158,6 +158,7 @@ export default function ReportBuilderPage() {
   const [saving, setSaving] = useState(false)
   const [loadDialogOpen, setLoadDialogOpen] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [generatingXlsx, setGeneratingXlsx] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [addFieldDialogSection, setAddFieldDialogSection] = useState<string | null>(null)
   const [selectedFieldSource, setSelectedFieldSource] = useState<FieldSource>('contract')
@@ -354,6 +355,33 @@ export default function ReportBuilderPage() {
     }
   }
 
+  async function handleGenerateXlsx() {
+    setGeneratingXlsx(true)
+    try {
+      const res = await fetch('/api/reports/generate-xlsx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ config }),
+      })
+      if (!res.ok) {
+        const d = await res.json()
+        throw new Error(d.error || 'Erro ao gerar planilha')
+      }
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${config.title.replace(/\s+/g, '_')}.xlsx`
+      a.click()
+      URL.revokeObjectURL(url)
+      toast.success('Planilha gerada!')
+    } catch (e: unknown) {
+      toast.error((e as Error).message)
+    } finally {
+      setGeneratingXlsx(false)
+    }
+  }
+
   // ─ Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -455,6 +483,15 @@ export default function ReportBuilderPage() {
           >
             <Eye className="h-3.5 w-3.5" />
             Pré-visualizar
+          </Button>
+          <Button
+            size="sm"
+            className="w-full gap-2 text-xs bg-emerald-600 hover:bg-emerald-700"
+            onClick={handleGenerateXlsx}
+            disabled={generatingXlsx}
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            {generatingXlsx ? 'Gerando...' : 'Exportar Excel (.xlsx)'}
           </Button>
           <Button
             size="sm"
