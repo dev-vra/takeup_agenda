@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   FileText, Plus, Search, Eye, EyeOff, Download,
-  ChevronRight, FileSpreadsheet
+  ChevronRight, FileSpreadsheet, Wrench,
 } from 'lucide-react'
 import { formatDate } from '@/lib/utils/date-format'
 import { cn } from '@/lib/utils'
@@ -67,11 +67,18 @@ export function RelatoriosList({ reports, contracts, showInactive }: RelatoriosL
           <h1 className="text-2xl font-bold text-slate-800">Relatórios</h1>
           <p className="text-slate-500 text-sm mt-0.5">{reports.length} relatório(s) gerado(s)</p>
         </div>
-        <Button asChild className="bg-blue-700 hover:bg-blue-800">
-          <Link href="/relatorios/gerar">
-            <Plus className="h-4 w-4 mr-1.5" /> Gerar Relatório
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link href="/relatorios/builder">
+              <Wrench className="h-4 w-4 mr-1.5" /> Builder
+            </Link>
+          </Button>
+          <Button asChild className="bg-blue-700 hover:bg-blue-800">
+            <Link href="/relatorios/gerar">
+              <Plus className="h-4 w-4 mr-1.5" /> Gerar Relatório
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}

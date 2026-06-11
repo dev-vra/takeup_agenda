@@ -5,11 +5,11 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
   CalendarDays, FileText, History, BarChart3, ClipboardList,
-  ChevronLeft, ChevronRight, LogOut
+  ChevronLeft, ChevronRight, LogOut, Users,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import Image from 'next/image'
 
@@ -26,6 +26,16 @@ export function Sidebar() {
   const router = useRouter()
   const supabase = createClient()
   const [collapsed, setCollapsed] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_USE_MOCK === 'true') { setIsAdmin(true); return }
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      supabase.from('profiles').select('role').eq('id', user.id).single()
+        .then(({ data }) => { if (data?.role === 'admin') setIsAdmin(true) })
+    })
+  }, [])
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -52,7 +62,10 @@ export function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-0.5 px-2 overflow-y-auto">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {[
+          ...NAV_ITEMS,
+          ...(isAdmin ? [{ href: '/admin/usuarios', label: 'Usuários', icon: Users }] : []),
+        ].map(({ href, label, icon: Icon }) => {
           const active = pathname.startsWith(href)
           const item = (
             <Link
