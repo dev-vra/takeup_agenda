@@ -38,6 +38,8 @@ export async function PATCH(
   if (body.password) {
     const { error: authError } = await admin.auth.admin.updateUserById(id, { password: body.password })
     if (authError) return NextResponse.json({ error: authError.message }, { status: 500 })
+    // Senha redefinida pelo admin é provisória: força troca no próximo login
+    await admin.from('profiles').update({ must_change_password: true }).eq('id', id)
   }
 
   return NextResponse.json({ success: true })

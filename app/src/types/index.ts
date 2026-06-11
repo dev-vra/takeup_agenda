@@ -39,6 +39,7 @@ export interface Profile {
   email: string
   role: UserRole
   avatar_url?: string
+  must_change_password?: boolean
   created_at: string
   updated_at: string
 }
