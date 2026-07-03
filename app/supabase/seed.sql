@@ -390,3 +390,19 @@ VALUES ('00000000-0000-0000-0000-000000000001', '3 HVIs aguardam aprovacao', 'AG
 -- Login: gabriela@laferlins.com.br / senha123
 -- 22 contratos, 74 parcelas, 19 analises
 -- ================================================================
+-- ================================================================
+-- MÓDULO 1 — Cadastros Mestres (exemplos)
+-- ================================================================
+INSERT INTO laboratories (name, sbrhvi_code, city, state, email, phone, created_by) VALUES
+  ('Laboratório ABRAPA Primavera', 'SBR-001', 'Primavera do Leste', 'MT', 'lab.primavera@abrapa.com.br', '(66) 3498-1000', '00000000-0000-0000-0000-000000000001'),
+  ('Laboratório IMAmt Rondonópolis', 'SBR-014', 'Rondonópolis', 'MT', 'hvi.rondonopolis@imamt.com.br', '(66) 3411-2200', '00000000-0000-0000-0000-000000000001'),
+  ('Laboratório Fibratec Barreiras', 'SBR-027', 'Barreiras', 'BA', 'contato@fibratec.com.br', '(77) 3612-4400', '00000000-0000-0000-0000-000000000001');
+
+INSERT INTO warehouses (name, sai_code, operator, city, state, capacity_tons, email, phone, created_by) VALUES
+  ('Armazém Primavera UBA-01', 'UBA-1001', 'Copervale', 'Primavera do Leste', 'MT', 45000.00, 'armazem01@copervale.com.br', '(66) 3498-3000', '00000000-0000-0000-0000-000000000001'),
+  ('Armazém Rondonópolis UBA-07', 'UBA-1007', 'Amaggi Logística', 'Rondonópolis', 'MT', 60000.00, 'uba07@amaggi.com.br', '(66) 3411-5500', '00000000-0000-0000-0000-000000000001'),
+  ('Armazém Luís Eduardo Magalhães', 'UBA-2003', 'SLC Logística', 'Luís Eduardo Magalhães', 'BA', 38000.00, 'lem@slclog.com.br', '(77) 3628-7700', '00000000-0000-0000-0000-000000000001');
+
+INSERT INTO carriers (name, document, modal, city, state, email, phone, created_by) VALUES
+  ('Transportadora Rota do Algodão Ltda', '12.345.678/0001-90', 'rodoviario', 'Rondonópolis', 'MT', 'operacoes@rotadoalgodao.com.br', '(66) 3421-8800', '00000000-0000-0000-0000-000000000001'),
+  ('Multimodal Centro-Oeste Log S.A.', '98.765.432/0001-10', 'multimodal', 'Cuiabá', 'MT', 'comercial@cologistica.com.br', '(65) 3644-9900', '00000000-0000-0000-0000-000000000001');

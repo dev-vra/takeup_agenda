@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import {
   CalendarDays, FileText, History, BarChart3, ClipboardList,
   ChevronLeft, ChevronRight, LogOut, Users,
+  Sprout, Building2, FlaskConical, Warehouse, Truck,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -19,6 +20,14 @@ const NAV_ITEMS = [
   { href: '/analises', label: 'Análises', icon: ClipboardList },
   { href: '/relatorios', label: 'Relatórios', icon: FileText },
   { href: '/historico', label: 'Histórico', icon: History },
+]
+
+const CADASTROS_ITEMS = [
+  { href: '/cadastros/produtores', label: 'Produtores', icon: Sprout },
+  { href: '/cadastros/compradores', label: 'Compradores', icon: Building2 },
+  { href: '/cadastros/laboratorios', label: 'Laboratórios', icon: FlaskConical },
+  { href: '/cadastros/armazens', label: 'Armazéns', icon: Warehouse },
+  { href: '/cadastros/transportadoras', label: 'Transportadoras', icon: Truck },
 ]
 
 export function Sidebar() {
@@ -43,6 +52,36 @@ export function Sidebar() {
     router.refresh()
   }
 
+  function renderNavItem({ href, label, icon: Icon }: { href: string; label: string; icon: typeof Users }) {
+    const active = pathname.startsWith(href)
+    const item = (
+      <Link
+        key={href}
+        href={href}
+        className={cn(
+          'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+          active
+            ? 'bg-blue-50 text-blue-700'
+            : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800',
+          collapsed && 'justify-center px-2'
+        )}
+      >
+        <Icon className="h-4 w-4 shrink-0" />
+        {!collapsed && <span className="truncate">{label}</span>}
+      </Link>
+    )
+
+    if (collapsed) {
+      return (
+        <Tooltip key={href}>
+          <TooltipTrigger asChild>{item}</TooltipTrigger>
+          <TooltipContent side="right">{label}</TooltipContent>
+        </Tooltip>
+      )
+    }
+    return item
+  }
+
   return (
     <aside className={cn(
       'flex flex-col h-screen bg-white text-slate-700 transition-all duration-300 border-r border-slate-200',
@@ -65,35 +104,15 @@ export function Sidebar() {
         {[
           ...NAV_ITEMS,
           ...(isAdmin ? [{ href: '/admin/usuarios', label: 'Usuários', icon: Users }] : []),
-        ].map(({ href, label, icon: Icon }) => {
-          const active = pathname.startsWith(href)
-          const item = (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                active
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800',
-                collapsed && 'justify-center px-2'
-              )}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              {!collapsed && <span className="truncate">{label}</span>}
-            </Link>
-          )
+        ].map(renderNavItem)}
 
-          if (collapsed) {
-            return (
-              <Tooltip key={href}>
-                <TooltipTrigger asChild>{item}</TooltipTrigger>
-                <TooltipContent side="right">{label}</TooltipContent>
-              </Tooltip>
-            )
-          }
-          return item
-        })}
+        {!collapsed && (
+          <p className="px-3 pt-5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            Cadastros
+          </p>
+        )}
+        {collapsed && <div className="my-3 border-t border-slate-200" />}
+        {CADASTROS_ITEMS.map(renderNavItem)}
       </nav>
 
       {/* Bottom */}

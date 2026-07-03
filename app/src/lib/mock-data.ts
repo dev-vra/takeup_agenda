@@ -13,20 +13,20 @@ export const MOCK_USER: Profile = {
 }
 
 export const MOCK_SELLERS: Seller[] = [
-  { id: '10000000-0000-0000-0001-000000000000', name: 'AGROPECUARIA BONFIM', document: '12.345.678/0001-90', city: 'Sorriso', state: 'MT', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '10000000-0000-0000-0002-000000000000', name: 'FAZENDA SANTA RITA', document: '98.765.432/0001-10', city: 'Primavera do Leste', state: 'MT', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '10000000-0000-0000-0003-000000000000', name: 'GRAOS DO CERRADO', document: '55.123.456/0001-77', city: 'Rondonopolis', state: 'MT', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '10000000-0000-0000-0004-000000000000', name: 'COTTONBRASIL AGRO', document: '33.987.654/0001-22', city: 'Cuiaba', state: 'MT', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '10000000-0000-0000-0001-000000000000', name: 'AGROPECUARIA BONFIM', document: '12.345.678/0001-90', city: 'Sorriso', state: 'MT', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '10000000-0000-0000-0002-000000000000', name: 'FAZENDA SANTA RITA', document: '98.765.432/0001-10', city: 'Primavera do Leste', state: 'MT', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '10000000-0000-0000-0003-000000000000', name: 'GRAOS DO CERRADO', document: '55.123.456/0001-77', city: 'Rondonopolis', state: 'MT', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '10000000-0000-0000-0004-000000000000', name: 'COTTONBRASIL AGRO', document: '33.987.654/0001-22', city: 'Cuiaba', state: 'MT', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
 ]
 
 export const MOCK_BUYERS: Buyer[] = [
-  { id: '20000000-0000-0000-0001-000000000000', name: 'LOUIS DREYFUS', document: '', city: 'Sao Paulo', state: 'SP', country: 'Brasil', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '20000000-0000-0000-0002-000000000000', name: 'CARGILL AGRICOLA', document: '', city: 'Sao Paulo', state: 'SP', country: 'Brasil', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '20000000-0000-0000-0003-000000000000', name: 'TOYAMA COTTON', document: '', city: 'Osaka', state: '', country: 'Japao', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '20000000-0000-0000-0004-000000000000', name: 'OLAM INTERNATIONAL', document: '', city: 'Singapura', state: '', country: 'Singapura', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '20000000-0000-0000-0005-000000000000', name: 'BUNGE ALGODAO', document: '', city: 'Campinas', state: 'SP', country: 'Brasil', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '20000000-0000-0000-0006-000000000000', name: 'DUNAVANT ENTERPRISES', document: '', city: 'Memphis', state: 'TN', country: 'EUA', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: '20000000-0000-0000-0007-000000000000', name: 'NIDERA COMMODITIES', document: '', city: 'Rotterdam', state: '', country: 'Holanda', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0001-000000000000', name: 'LOUIS DREYFUS', document: '', city: 'Sao Paulo', state: 'SP', country: 'Brasil', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0002-000000000000', name: 'CARGILL AGRICOLA', document: '', city: 'Sao Paulo', state: 'SP', country: 'Brasil', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0003-000000000000', name: 'TOYAMA COTTON', document: '', city: 'Osaka', state: '', country: 'Japao', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0004-000000000000', name: 'OLAM INTERNATIONAL', document: '', city: 'Singapura', state: '', country: 'Singapura', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0005-000000000000', name: 'BUNGE ALGODAO', document: '', city: 'Campinas', state: 'SP', country: 'Brasil', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0006-000000000000', name: 'DUNAVANT ENTERPRISES', document: '', city: 'Memphis', state: 'TN', country: 'EUA', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: '20000000-0000-0000-0007-000000000000', name: 'NIDERA COMMODITIES', document: '', city: 'Rotterdam', state: '', country: 'Holanda', is_active: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
 ]
 
 function makeInstallments(contractId: string, months: {month: string; qty: number}[], deliveredMap: Record<string, number> = {}): ContractInstallment[] {

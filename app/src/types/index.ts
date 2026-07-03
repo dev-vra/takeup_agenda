@@ -33,6 +33,11 @@ export type ReportType =
 
 export type ResponsibleType = 'hvi' | 'takeup' | 'geral'
 
+// ===== Módulo 1 — Cadastros Mestres & CRM =====
+export type PersonType = 'pf' | 'pj'
+export type PartnerKind = 'seller' | 'buyer' | 'laboratory' | 'warehouse' | 'carrier'
+export type InteractionType = 'ligacao' | 'email' | 'reuniao' | 'visita' | 'whatsapp' | 'nota'
+
 export interface Profile {
   id: string
   name: string
@@ -50,8 +55,18 @@ export interface Seller {
   document?: string
   city?: string
   state?: string
+  person_type?: PersonType
+  state_registration?: string
+  sai_producer_code?: string
+  address?: string
+  zip_code?: string
+  email?: string
+  phone?: string
+  is_active: boolean
+  notes?: string
   created_at: string
   updated_at: string
+  farms?: ProducerFarm[]
 }
 
 export interface Buyer {
@@ -61,8 +76,103 @@ export interface Buyer {
   city?: string
   state?: string
   country?: string
+  person_type?: PersonType
+  trader_type?: string
+  address?: string
+  email?: string
+  phone?: string
+  is_active: boolean
+  notes?: string
   created_at: string
   updated_at: string
+}
+
+export interface Laboratory {
+  id: string
+  name: string
+  sbrhvi_code?: string
+  city?: string
+  state?: string
+  email?: string
+  phone?: string
+  is_active: boolean
+  notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export interface Warehouse {
+  id: string
+  name: string
+  sai_code?: string
+  operator?: string
+  city?: string
+  state?: string
+  capacity_tons?: number
+  email?: string
+  phone?: string
+  is_active: boolean
+  notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export interface Carrier {
+  id: string
+  name: string
+  document?: string
+  modal?: string
+  city?: string
+  state?: string
+  email?: string
+  phone?: string
+  is_active: boolean
+  notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export interface ProducerFarm {
+  id: string
+  seller_id: string
+  name: string
+  sai_farm_code?: string
+  city?: string
+  state?: string
+  hectares?: number
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export interface PartnerContact {
+  id: string
+  partner_kind: PartnerKind
+  partner_id: string
+  name: string
+  role?: string
+  email?: string
+  phone?: string
+  whatsapp?: string
+  is_primary: boolean
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export interface PartnerInteraction {
+  id: string
+  partner_kind: PartnerKind
+  partner_id: string
+  type: InteractionType
+  content: string
+  occurred_at: string
+  created_at: string
+  created_by?: string
+  creator?: Profile
 }
 
 export interface Contract {
@@ -177,7 +287,7 @@ export interface AnalysisComment {
 
 export interface Document {
   id: string
-  entity_type: 'analysis' | 'contract' | 'agenda'
+  entity_type: 'analysis' | 'contract' | 'agenda' | 'seller' | 'buyer' | 'laboratory' | 'warehouse' | 'carrier'
   entity_id: string
   file_url: string
   file_name: string
